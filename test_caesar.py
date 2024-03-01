@@ -10,6 +10,15 @@ Created on Fri Feb  1 23:06:50 2019
 """
 import string
 
+
+
+### absolute filters
+#without these the word can't exists in the dictionary (vowels)
+
+
+
+
+
 letters = string.ascii_letters #contains 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 message = "The quick brown fox jumped over the lazy dog" #type your message here
@@ -23,10 +32,11 @@ invkeys = {} #use dictionary for inverse letter mapping, you could use inverse s
 for index, letter in enumerate(letters):
     # cypher setup
     if index < totalLetters: #lowercase
-        #INSERT CODE HERE
+        keys[letters[index]] = letters[(letters.index(letter) + offset) % totalLetters]
+        invkeys[letters[(letters.index(letter) + offset) % totalLetters]] = letters[index]
     else: #uppercase
-        #INSERT CODE HERE
-print("Cypher Dict:", keys)
+        keys[letters[index].upper()] = letters[((letters.index(letter) + offset) % totalLetters)].upper()
+        invkeys[letters[((letters.index(letter) + offset) % totalLetters)].upper()] = letters[index].upper()
 
 #encrypt
 encryptedMessage = []
@@ -35,10 +45,14 @@ for letter in message:
         encryptedMessage.append(letter)
     else:
         encryptedMessage.append(keys[letter])
-print("Encrypted Message:", ''.join(encryptedMessage)) #join is used to put list inot string
+print("Encrypted Message:", ''.join(encryptedMessage)) #join is used to put list into string
+
+
 
 #decrypt
 decryptedMessage = []
+
+
 for letter in encryptedMessage:
     if letter == ' ': #spaces
         decryptedMessage.append(letter)
