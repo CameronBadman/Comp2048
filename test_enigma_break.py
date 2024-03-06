@@ -19,12 +19,54 @@ capitalLetters = letters[-26:]
 #print(capitalLetters)
 
 ShakesHorribleMessage = "Xm xti ca idjmq Ecokta Rkhoxuu! Kdiu gm xex oft uz yjwenv qik parwc hs emrvm sfzu qnwfg. Gvgt vz vih rlt ly cnvpym xtq sgfvk jp jatrl irzru oubjo odp uso nsty jm gfp lkwrx pliv ojfo rl rylm isn aueuom! Gdwm Qopjmw!"
-crib = ""
+crib = "hail shakes"
 crib_substring = ""
 print(crib_substring)
 
-##Break the code via brute force search
-#INSERT CODE HERE
+class Iterator:
+    def __init__(self):
+        self.current = 'AAA'
+    
+    def next_iteration(self):
+        if self.current == 'ZZZ':
+            return None
+        chars = list(self.current)
+        for i in range(len(chars)-1, -1, -1):
+            if chars[i] != 'Z':
+                chars[i] = chr(ord(chars[i]) + 1)
+                break
+            else:
+                chars[i] = 'A'
+        self.current = ''.join(chars)
+        return self.current
+    
+    def get_current(self):
+        return self.current
 
-#Print the Decoded message
-#INSERT CODE HERE
+
+Iterator = Iterator()
+while True:
+    
+    key = Iterator.get_current()
+    print(key)
+    shakes_engine = enigma.Enigma(rotor.ROTOR_Reflector_A, rotor.ROTOR_I,
+                                rotor.ROTOR_II, rotor.ROTOR_III, key=key,
+                                plugs="AA BB CC DD EE")
+    
+    message = shakes_engine.encipher(ShakesHorribleMessage)
+    print(message, key)
+    if message.endswith("Hail Shakes!"):
+        print(f"The decrypted message is: {message}")
+        print(f"with a key of {key}")
+        break
+    
+    next_key = Iterator.next_iteration()
+    if next_key is None:
+        print("Crib not found. Exiting loop.")
+        break
+
+
+
+
+
+        
