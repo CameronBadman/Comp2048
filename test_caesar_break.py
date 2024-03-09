@@ -9,11 +9,6 @@ Created on Sat Feb  2 23:03:02 2019
 from collections import Counter
 import string
 
-from break_caesar import *
-
-
-
-
 message = "Zyp cpxpxmpc ez wzzv fa le esp delcd lyo yze ozhy le jzfc qppe Ehz ypgpc rtgp fa hzcv Hzcv rtgpd jzf xplytyr lyo afcazdp lyo wtqp td pxaej hteszfe te Escpp tq jzf lcp wfnvj pyzfrs ez qtyo wzgp cpxpxmpc te td espcp lyo ozye esczh te lhlj Depaspy Slhvtyr" 
 
 #frequency of each letter
@@ -71,10 +66,67 @@ print("Predicted Shift:", shift)
 e_ass = decrypt_caesar(message, shift)
 
 
+data = {
+    "e": 11.16071,
+    "a": 8.4966,
+    "r": 7.5809,
+    "i": 7.5448,
+    "o": 7.1635,
+    "t": 6.9509,
+    "n": 6.6544,
+    "s": 5.7351,
+    "l": 5.4893,
+    "c": 4.5388,
+    "u": 3.6308,
+    "d": 3.3844,
+    "p": 3.1671,
+    "h": 3.0034,
+    "g": 2.4705,
+    "b": 2.0720,
+    "f": 1.8121,
+    "y": 1.7779,
+    "w": 1.2899,
+    "k": 1.1016,
+    "v": 1.0074,
+    "x": 0.2902,
+    "z": 0.2722,
+    "j": 0.1965,
+    "q": 0.1962
+}
 
-#uses the assumption tha e is not the most abundant character
-non_e_ass = find_max_similarity_message(message)
 
 
 
 
+
+def letter_frequency(message):
+    """Calculate the frequency of each letter in the message."""
+    message = message.replace(" ", "").lower()  # Remove spaces and convert to lowercase
+    letter_counts = Counter(message)
+    total_letters = sum(letter_counts.values())
+    return {letter: (count / total_letters) * 100 for letter, count in letter_counts.items()}
+
+def find_max_similarity_message(message, data):
+    """Find the decrypted message that has the maximum similarity to typical English frequencies."""
+    best_shift = None
+    best_similarity = float('-inf')
+    decrypted_message_best = ""
+    
+    for shift in range(26):
+        decrypted_message = decrypt_caesar(message, shift)
+        decrypted_freq = letter_frequency(decrypted_message)
+        
+        # Calculate similarity to English frequencies
+        similarity = sum(min(decrypted_freq.get(letter, 0), frequency) for letter, frequency in data.items())
+        
+        if similarity > best_similarity:
+            best_similarity = similarity
+            best_shift = shift
+            decrypted_message_best = decrypted_message
+            
+    return decrypted_message_best, best_shift
+
+# Use the function
+decrypted_message, shift = find_max_similarity_message(message, data)
+print("Decrypted Message:", decrypted_message)
+print("Best Shift:", shift)

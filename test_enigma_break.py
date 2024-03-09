@@ -13,6 +13,7 @@ Created on Tue Feb  5 12:17:02 2019
 import string
 import enigma
 import rotor
+import time
 
 letters = string.ascii_letters #contains 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 capitalLetters = letters[-26:]
@@ -26,6 +27,7 @@ print(crib_substring)
 class Iterator:
     def __init__(self):
         self.current = 'AAA'
+        self.iterations = 0
     
     def next_iteration(self):
         if self.current == 'ZZZ':
@@ -38,15 +40,18 @@ class Iterator:
             else:
                 chars[i] = 'A'
         self.current = ''.join(chars)
+        self.iterations +=1
         return self.current
     
     def get_current(self):
         return self.current
+    
+    def get_iterations(self):
+        return self.iterations
 
-
+start = time.time()
 Iterator = Iterator()
 while True:
-    
     key = Iterator.get_current()
     print(key)
     shakes_engine = enigma.Enigma(rotor.ROTOR_Reflector_A, rotor.ROTOR_I,
@@ -55,15 +60,20 @@ while True:
     
     message = shakes_engine.encipher(ShakesHorribleMessage)
     print(message, key)
+
     if message.endswith("Hail Shakes!"):
         print(f"The decrypted message is: {message}")
         print(f"with a key of {key}")
+        print(Iterator.get_iterations())
         break
     
     next_key = Iterator.next_iteration()
     if next_key is None:
         print("Crib not found. Exiting loop.")
         break
+
+end = time.time()
+print(end - start)
 
 
 
