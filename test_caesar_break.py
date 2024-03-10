@@ -34,14 +34,33 @@ letters = string.ascii_letters #contains 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL
 
 """
 Determines the shirt based on a letter and the maxLetter in ascii characters
-
 """
 def get_shift(letter: str, MaxLetter: str):
+    """
+    Determines the shift used in the Caesar Cipher based on a given letter and the maxLetter.
+    
+    Parameters:
+    - letter: The letter to compare to the maxLetter.
+    - MaxLetter: The most frequently occurring letter in the message.
+    
+    Returns:
+    - The calculated shift as an integer.
+    """
     LetterIndex = letters.index(letter)
     MaxLetterIndex = letters.index(MaxLetter)
     return abs(MaxLetterIndex - LetterIndex) % 26
 
 def decrypt_caesar(message: str, shift):
+    """
+    Decrypts a message encrypted with a Caesar Cipher using a given shift.
+    
+    Parameters:
+    - message: The encrypted message as a string.
+    - shift: The shift used in the Caesar Cipher as an integer.
+    
+    Returns:
+    - The decrypted message as a string.
+    """
     decryptedMessage = []
     totalLetters = 26
     invkeys = {} 
@@ -65,7 +84,9 @@ print("Predicted Shift:", shift)
 #uses the assumption that e is the most abundant character
 e_ass = decrypt_caesar(message, shift)
 
+"""
 
+"""
 data = {
     "e": 11.16071,
     "a": 8.4966,
@@ -94,12 +115,16 @@ data = {
     "q": 0.1962
 }
 
-
-
-
-
-
 def letter_frequency(message):
+    """
+    Calculates the frequency of each letter in a message.
+    
+    Parameters:
+    - message: The message for which to calculate letter frequencies.
+    
+    Returns:
+    - A dictionary of letter frequencies in percentage.
+    """
     """Calculate the frequency of each letter in the message."""
     message = message.replace(" ", "").lower()  # Remove spaces and convert to lowercase
     letter_counts = Counter(message)
@@ -107,7 +132,16 @@ def letter_frequency(message):
     return {letter: (count / total_letters) * 100 for letter, count in letter_counts.items()}
 
 def find_max_similarity_message(message, data):
-    """Find the decrypted message that has the maximum similarity to typical English frequencies."""
+    """
+    Finds the decrypted message that has the maximum similarity to typical English letter frequencies.
+    
+    Parameters:
+    - message: The encrypted message as a string.
+    - data: A dictionary of typical English letter frequencies.
+    
+    Returns:
+    - The best decrypted message as a string and the corresponding shift as an integer.
+    """
     best_shift = None
     best_similarity = float('-inf')
     decrypted_message_best = ""
@@ -126,7 +160,6 @@ def find_max_similarity_message(message, data):
             
     return decrypted_message_best, best_shift
 
-# Use the function
 decrypted_message, shift = find_max_similarity_message(message, data)
 print("Decrypted Message:", decrypted_message)
 print("Best Shift:", shift)

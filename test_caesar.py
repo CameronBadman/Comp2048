@@ -15,10 +15,6 @@ import string
 ### absolute filters
 #without these the word can't exists in the dictionary (vowels)
 
-
-
-
-
 letters = string.ascii_letters #contains 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 message = "The quick brown fox jumped over the lazy dog" #type your message here

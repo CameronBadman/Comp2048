@@ -26,40 +26,42 @@ print(crib_substring)
 
 class Iterator:
     def __init__(self):
-        self.current = 'AAA'
-        self.iterations = 0
-    
+        self._rotor_count = 3
+        self.permutations = pow(26, self._rotor_count) - 1 # Represents 'ZZZ', or the start of 'AAAA'.
+        self.current_number = self.permutations  # Start from the maximum.
+
     def next_iteration(self):
-        if self.current == 'ZZZ':
-            return None
-        chars = list(self.current)
-        for i in range(len(chars)-1, -1, -1):
-            if chars[i] != 'Z':
-                chars[i] = chr(ord(chars[i]) + 1)
-                break
-            else:
-                chars[i] = 'A'
-        self.current = ''.join(chars)
-        self.iterations +=1
-        return self.current
-    
+        self.current_number -= 1  # Decrement 'number' for the next iteration.
+
     def get_current(self):
-        return self.current
-    
+        # Adjust to 0-based for calculation
+        number = self.current_number - 1
+        chars = []
+        for index in range (self._rotor_count):
+            number, remainder = divmod(number, 26)
+            # Fix the off-by-one error by adjusting remainder
+            chars.append(chr(ord('A') + remainder))
+        return ''.join(reversed(chars)) if chars else 'A'  # Ensure 'A' is returned for the first position
+
     def get_iterations(self):
-        return self.iterations
+        return self.permutations - self.current_number
+    
+    def check_end(self): 
+        return self.current_number <= 1
+
 
 start = time.time()
 Iterator = Iterator()
+
 while True:
     key = Iterator.get_current()
-    print(key)
+    #print(key)
     shakes_engine = enigma.Enigma(rotor.ROTOR_Reflector_A, rotor.ROTOR_I,
                                 rotor.ROTOR_II, rotor.ROTOR_III, key=key,
                                 plugs="AA BB CC DD EE")
     
     message = shakes_engine.encipher(ShakesHorribleMessage)
-    print(message, key)
+    #print(message, key)
 
     if message.endswith("Hail Shakes!"):
         print(f"The decrypted message is: {message}")
@@ -67,8 +69,8 @@ while True:
         print(Iterator.get_iterations())
         break
     
-    next_key = Iterator.next_iteration()
-    if next_key is None:
+    Iterator.next_iteration()
+    if Iterator.check_end() is True:
         print("Crib not found. Exiting loop.")
         break
 
