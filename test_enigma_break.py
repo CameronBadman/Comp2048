@@ -62,7 +62,7 @@ def break_engigma():
         
         message = shakes_engine.encipher(ShakesHorribleMessage)
         #print(message, key)
-
+        print(message, key)
         if message.endswith("Hail Shakes!"):
             print(f"The decrypted message is: {message}")
             print(f"with a key of {key}")
