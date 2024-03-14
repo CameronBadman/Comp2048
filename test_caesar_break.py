@@ -84,9 +84,6 @@ print("Predicted Shift:", shift)
 #uses the assumption that e is the most abundant character
 e_ass = decrypt_caesar(message, shift)
 
-"""
-
-"""
 data = {
     "e": 11.16071,
     "a": 8.4966,
@@ -115,25 +112,32 @@ data = {
     "q": 0.1962
 }
 
-def letter_frequency(message):
+from collections import Counter
+
+def decrypt_caesar(message, shift):
     """
-    Calculates the frequency of each letter in a message.
+    Decrypts a message encrypted with the Caesar cipher by shifting letters back by the shift amount.
     
     Parameters:
-    - message: The message for which to calculate letter frequencies.
+    - message: The encrypted message as a string.
+    - shift: The shift amount used in the Caesar cipher.
     
     Returns:
-    - A dictionary of letter frequencies in percentage.
+    - The decrypted message as a string.
     """
-    """Calculate the frequency of each letter in the message."""
-    message = message.replace(" ", "").lower()  # Remove spaces and convert to lowercase
-    letter_counts = Counter(message)
-    total_letters = sum(letter_counts.values())
-    return {letter: (count / total_letters) * 100 for letter, count in letter_counts.items()}
+    decrypted = []
+    for char in message:
+        if char.isalpha():
+            shifted = ord('a') + (ord(char) - ord('a') - shift) % 26
+            decrypted.append(chr(shifted))
+        else:
+            decrypted.append(char)
+    return ''.join(decrypted)
 
 def find_max_similarity_message(message, data):
     """
-    Finds the decrypted message that has the maximum similarity to typical English letter frequencies.
+    Finds the decrypted message that has the maximum similarity to typical English letter frequencies
+    by calculating a similarity score in a more readable manner.
     
     Parameters:
     - message: The encrypted message as a string.
@@ -148,10 +152,16 @@ def find_max_similarity_message(message, data):
     
     for shift in range(26):
         decrypted_message = decrypt_caesar(message, shift)
-        decrypted_freq = letter_frequency(decrypted_message)
+        decrypted_freq = Counter(decrypted_message)
         
-        # Calculate similarity to English frequencies
-        similarity = sum(min(decrypted_freq.get(letter, 0), frequency) for letter, frequency in data.items())
+        # Initialize similarity score for this shift
+        similarity = 0
+        
+        # Calculate similarity by summing the products of frequencies and their expected values
+        for letter, frequency in data.items():
+            if letter in decrypted_freq:
+                similarity += decrypted_freq[letter] * frequency
+            # No need for an else, as missing letters contribute 0 to the similarity
         
         if similarity > best_similarity:
             best_similarity = similarity

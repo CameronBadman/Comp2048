@@ -1,45 +1,7 @@
 code = "19 17 17 19 14 20 23 18 19 8 12 16 19 8 3 21 8 25 18 14 18 6 3 18 8 15 18 22 18 11"
 
 
-#########################
-#Q3D
 """
- if I were to make a guess, under the assumption of only using the crib "heil shakes" it would take around a hour to 12 hours minimum, a month at maximum. 
-
- https://brilliant.org/wiki/enigma-machine/#:~:text=Alan%20Turing%20and%20Gordon%20Welchman,send%20a%20given%20coded%20message.
-
- this source says that the Bombe machine was able to crack enigma in 20 mins. which is pretty similar to the 1 - 12 hours guess I gave, as the Bombe machine didn't just use "hail hitler", but also normally used "weather report" 
- the Bombe had 36 enigma machines running at once
-
-"""
-
-#Q3e
-"""
-with the extra rotors the extra amounts of permuations of the rotors alone is 5 x 4 x 3 = 60
-plus the rotors of 26 ^ 3 = 17576 
-the number of plugboard combinations is ~150,000,000,000,000 assuming all 10 pairs 
-
-meaning that by the time you add all these numbers together 
-you get 
-158184000000000000000
-
-
-assuming worst case all possible combinations, 
-
-my computer burnt thought 5803 in 2.1246650218963623 as of writing this. 
-
-as such 
-
-https://plus.maths.org/content/exploring-enigma#:~:text=The%20answer%20is%20that%20there,letters%20on%20the%20plug%20board.
-
-
-time_per_comptation is = 2.1246650218963623 / 5803 = 0.0003661321767872415
-
-number of seconds for all possible combination
-
-5.791625225291301e+16
-
-5.79462089351128e+18 or ~ 1.8 teraannus years 
 
 ########section III 
 

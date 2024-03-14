@@ -47,6 +47,3 @@ shakes_engine = engine = enigma.Enigma(rotor.ROTOR_Reflector_A, rotor.ROTOR_I,
 Message_decrpted = engine.encipher(ShakesHorribleMessage)
 
 print (ShakesHorribleMessage + "\n" + Message_decrpted)
-
-#Write code to decrypt message above
-#INSERT CODE HERE
