@@ -17,6 +17,8 @@ life.insertBlinker((0,0))
 #life.insertGlider((0,0))
 cells = life.getStates() #initial state
 
+print(cells)
+
 #evolve once
 life.evolve()
 cellsUpdated1 = life.getStates()
@@ -24,6 +26,8 @@ cellsUpdated1 = life.getStates()
 #evolve twice
 life.evolve()
 cellsUpdated2 = life.getStates()
+
+
 
 #-------------------------------
 #plot cells
