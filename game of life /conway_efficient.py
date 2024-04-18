@@ -11,22 +11,19 @@ Created on Tue Jan 15 12:21:17 2019
 import numpy as np
 from scipy import signal
 import rle
-import random
-
 
 class GameOfLife:
     '''
     Object for computing Conway's Game of Life (GoL) cellular machine/automata
     '''
     def __init__(self, N=256, finite=False, fastMode=False):
-        self.grid = np.zeros((N,N), np.int8)
-        self.neighborhood = np.ones((3,3), np.int8) # 8 connected kernel
+        self.grid = np.zeros((N,N), np.int64)
+        self.neighborhood = np.ones((3,3), np.int64) # 8 connected kernel
         self.neighborhood[1,1] = 0 #do not count centre pixel
         self.finite = finite
         self.fastMode = fastMode
         self.aliveValue = 1
         self.deadValue = 0
-        self.size = N
         
     def getStates(self):
         '''
@@ -39,37 +36,26 @@ class GameOfLife:
         Same as getStates()
         '''
         return self.getStates()
-    
-    def get_grid_val(self, offset, position):
-            return self.grid[offset[0] + position[0]][offset[1] + position[1]]
-    
-    def slow_evolve(self, mode='same', boundary="wrap"):
-        """
-        A placeholder function that mimics the behavior of convolve2d without actually performing the convolution.
+               
+    def evolve(self):
+        '''
+        Given the current states of the cells, apply the GoL rules:
+        - Any live cell with fewer than two live neighbors dies, as if by underpopulation.
+        - Any live cell with two or three live neighbors lives on to the next generation.
+        - Any live cell with more than three live neighbors dies, as if by overpopulation.
+        - Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction
+        '''
         
-        Parameters:
-            mode (str, optional): Determines the output shape. {'full', 'valid', 'same'}
-            boundary (str, optional): Determines how to handle boundaries. {'wrap', 'fill'}
-            
-        Returns:
-            numpy.ndarray: The result of the "convolution".
-        """
+        # Calculate the weighted sum of neighbors
         
-        # Mimic behavior based on boundary
-        if boundary == 'wrap':
-            padded_grid = np.pad(self.grid, 1, mode='wrap')
-        else:  # 'fill'
-            padded_grid = np.pad(self.grid, 1, mode='constant', constant_values=self.deadValue)
+      
+        # Apply the Game of Life rules
+        # A live cell with 2 or 3 live neighbors stays alive, else it dies
+        # A dead cell with exactly 3 live neighbors becomes alive
         
-        # Calculate the weighted sum of neighbors based on the neighborhood kernel
-        neighbor_count = np.zeros_like(self.grid)
-        for row in range(1, self.size + 1):
-            for col in range(1, self.size + 1):
-                neighbor_count[row-1, col-1] = np.sum(padded_grid[row-1:row+2, col-1:col+2] * self.neighborhood)
-    
-        return neighbor_count
-    
-    def fast_evolve(self):
+        #get weighted sum of neighbors
+        #PART A & E CODE HERE
+         
         # EXPLANATION 
         # convolve is a function that takes multiple argument, but the main 2 are a 2 np.arrays
         # the first np.array is the base array (self.grid)
@@ -89,31 +75,13 @@ class GameOfLife:
 
         # finnaly the fill value fill the intial np,array with values, for which the numbers are then placed in, these also are the default values for when the kernal is over the edge 
         # of the grid
-        return signal.convolve2d(self.grid, self.neighborhood, mode='same', boundary='wrap' if not self.finite else 'fill', fillvalue=self.deadValue)
+
         
-  
-    def evolve(self):
-        '''
-        Given the current states of the cells, apply the GoL rules:
-        - Any live cell with fewer than two live neighbors dies, as if by underpopulation.
-        - Any live cell with two or three live neighbors lives on to the next generation.
-        - Any live cell with more than three live neighbors dies, as if by overpopulation.
-        - Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction
-        '''
-        
-        # Calculate the weighted sum of neighbors
-        
-      
-        # Apply the Game of Life rules
-        # A live cell with 2 or 3 live neighbors stays alive, else it dies
-        # A dead cell with exactly 3 live neighbors becomes alive
-        
-        #get weighted sum of neighbors
-              
-        neighbor_count = self.fast_evolve() if self.fastMode else self.slow_evolve()
         
         # gets the amount of neighbors using convovle
-    
+        neighbor_count = signal.convolve2d(self.grid, self.neighborhood, mode='same', boundary='wrap' if not self.finite else 'fill', fillvalue=self.deadValue)
+
+
         # EXPLANATION 
         # the np.where function is useful for elegeantly placing values into a array, using arrays of similar sizing.
         # The reasoning for using this is to speed up the N as much as possible by using np.arrays to ensure speed,
@@ -121,11 +89,29 @@ class GameOfLife:
         # using the neibor_count function, which implicitly would clear all cells, the cells that fit rules 2 and 4 are activated creating life 
         # thus meaning that 1 and 3 are implicitly done the completly clearing the grid
 
+
         # executes rule 2
         self.grid = np.where((self.grid == self.aliveValue) & ((neighbor_count == 2) | (neighbor_count == 3)), self.aliveValue, self.deadValue)
         # executes rule 4
         self.grid = np.where((self.grid == self.deadValue) & (neighbor_count == 3), self.aliveValue, self.grid)
+    
 
+        # debuging and code for understand conways game visually by terminal 
+        """ 
+        print("-"*100 + " grid")
+        for row in self.grid:
+            print(' '.join(map(str, row)))
+        print("-"*100 + " neighborhood")
+        for row in neighbor_count:
+            print(' '.join(map(str, row)))
+
+        """
+        
+        #implement the GoL rules by thresholding the weights
+        #PART A CODE HERE
+        
+        #update the grid
+#        self.grid = #UNCOMMENT THIS WITH YOUR UPDATED GRID
     
     def insertBlinker(self, index=(0,0)):
         '''
@@ -134,20 +120,7 @@ class GameOfLife:
         self.grid[index[0], index[1]+1] = self.aliveValue
         self.grid[index[0]+1, index[1]+1] = self.aliveValue
         self.grid[index[0]+2, index[1]+1] = self.aliveValue
-
-
-    def randomLargePattern(self):
-        random_grid = np.zeros_like(self.grid)
         
-        for x in range(self.grid.shape[0]): 
-            for y in range(self.grid.shape[1]): 
-                random_number = random.randint(0, 10)
-                #print(random_number)
-                if random_number <= 3:
-                    random_grid[x,y] = self.aliveValue
-
-        self.grid = random_grid
-    
     def insertGlider(self, index=(0,0)):
         '''
         Insert a glider construct at the index position
@@ -226,14 +199,14 @@ class GameOfLife:
         
         for i, row_str in enumerate(rows):
             for j, char in enumerate(row_str):
+                print(row_str, char)
                 if char == '0':
+                    print(1)
                     self.grid[row + i, col + j] = self.aliveValue
-        """
+
         print("-"*100 + " grid")
         for row in self.grid:
             print(' '.join(map(str, row)))
-
-            """
 
 
 
@@ -241,5 +214,5 @@ class GameOfLife:
         '''
         Given string loaded from RLE file, populate the game grid
         '''
-        return rle.RunLengthEncodedParser(rleString)
+
         

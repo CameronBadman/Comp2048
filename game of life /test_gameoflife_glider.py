@@ -13,12 +13,18 @@ import matplotlib.animation as animation
 N = 64
 
 #create the game of life object
-life = conway.GameOfLife(N)
+life = conway.GameOfLife(N, finite=True, fastMode=True)
 #life.insertBlinker((0,0))
 #life.insertGlider((0,0))
 #life.insertGliderGun()
 """https://conwaylife.com/wiki/Blinker_puffer_1"""
-life.insertFromPlainText('gosper.txt', 5, 5)
+#life.insertFromPlainText('text_files/gosper.txt', 5, 5)
+"""https://conwaylife.com/wiki/Jaydot"""
+#life.insertFromPlainText('text_files/jaydot.txt', 5, 5)
+"""https://conwaylife.com/wiki/Ants"""
+#life.insertFromPlainText('text_files/ants.txt', 5, 5)
+#life.randomLargePattern()
+life.insertFromRLE("turingmachine.rle")
 
 cells = life.getStates() #initial state
 
@@ -43,13 +49,14 @@ def on_key(event):
 def animate(i):
     """perform animation step"""
     global life
+    
     if not pause:
         life.evolve()
         cellsUpdated = life.getStates()
         img.set_array(cellsUpdated)
     return img,
 
-interval = 300 #ms
+interval = 250 #ms
 
 #animate frames with interval between them calling animate function at each frame
 ani = animation.FuncAnimation(fig, animate, frames=48, interval=interval, blit=True)
