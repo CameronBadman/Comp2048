@@ -1,0 +1,118 @@
+A 
+Slow evolve is the function for implementing without convolve, it uses pad arrays to help simulate infintes with wrap and fill
+in the circumstance of wrap a cells neibors for the a edge is the oppsoite edge 
+in the circumstance of fill a cells neibors are dead
+
+it can generally run to around 1500 without any issues
+
+PLEASE BE ADVISED I have put a pause start mechanism in test_gameoflife_grider to see the conways inserting for issues
+
+
+B
+I can verify it works correctly because the glider is running and moving
+
+
+C
+glider gun had two points of issue
+implemented pause funciton to help find it
+
+D 
+
+I constructed 
+
+ants """https://conwaylife.com/wiki/Ants"""
+multiple ants going in a line when alive the cells die and become a 2x2 alive swaure 
+
+puffer blinker - """https://conwaylife.com/wiki/Blinker_puffer_1"""
+this is a gosper puffer, it gliders forward and is able drop blinkers as it moves 
+
+jaydot -   """https://conwaylife.com/wiki/Jaydot"""
+this is a formation of cells called a methuselah that have a extrmeily long evolve period (6920) in which it lasts before stabilzing extending to singificantly large
+then the original size of the formation 
+
+E
+method still uses the kernal, hoever it uses a inert function from scipy signal that allows for grid to be 3000 and above to 
+do simulate with little lag, I also did some changes to the number system to speed up both versions. Specifically I
+swithed the types used for each cell from int64 (inefficient we dont need all those numbers) to byte reducing the casting to byte by the interpretor
+
+it should also be brung up that there is Other optimisations that could have been done 
+
+- usage of sparce representation instead of grid representation
+- usage of lazy loading. i.e we are currently checking all the grid, but parts of the grid prospectively 
+could have no cells like a 1/4 quarter unfilled 
+
+
+
+F
+
+P46_gliderless_MWSS_gun
+
+
+Period-52_glider_gun
+
+
+Ring_of_fire
+
+G 
+
+seems to work, larger then 1750 cells on screen at once 
+
+
+H 
+
+Given the Turing machine pattern runs within GoL, comment on whether GoL is Turing complete. 
+Justify your answer by referencing the theory of Turing machines and the different components 
+of the Turing machine pattern provided using this link. 
+
+
+
+ - theory of Turing machines
+for the sake of time I'm not going to go into extreme detail about the specifics of how the GOL turing machine works, just explain 
+primary functions and some of the child functions in the larger componants when needed
+
+ - Turing machine parts 
+
+ - TURING TAPE 
+    http://rendell-attic.org/gol/tmdetails.htm#TURING_TAPE
+    the tape is implemented with 2 stacks which is the general methodology for implementing a syntheically infinite tape 
+    - STACK 
+        http://rendell-attic.org/cgi-bin/gol/gen_jsAnimation.pl?pattern=stacksm.rle&x0=-5&y0=-5&zoom=4&colors=3&height=970&width=201&grid=4
+        uses multiple stack cells together to create the 'infinte' tape
+
+        - POP CONTROL
+            http://rendell-attic.org/gol/tmdetails.htm#POP_CONTROL
+            does the pop method in a stack 
+
+        - PUSH CONTROL
+            http://rendell-attic.org/gol/tmdetails.htm#PUSH_CONTROL
+            does the push method in a stack 
+
+- FINITE STATE MACHINE  
+    http://rendell-attic.org/cgi-bin/gol/gen_jsAnimation.pl?pattern=fsm.lif&x0=-5&y0=0&zoom=4&colors=3&height=802
+    the fsm design is made modularly, meaing it is able to be extended with relative ease. it takes Information to and from the SIGNAL DETECTOR
+    which is being read and wrote. 
+
+- SIGNAL DETECTOR
+    http://rendell-attic.org/cgi-bin/gol/gen_jsAnimation.pl?pattern=sigdet.lif&x0=10&y0=0&zoom=3&colors=3&height=700
+    this connects the turing tape to the finite state machine allowing for memory, it does this by connecting the space ships from the fsm
+    and gliders from the feed tape and adds corresponding motions and translations for each 
+
+
+first off to define a set of criterian for turing machine (theory of turing machines)
+
+- a finite state machine, that has a transition function with infite memory with actions that can be taken based on input and the current state. 
+i.e a prospectively infite tape of 1's and 0's with a read and write head, connected to a set of instructions (state registers). 
+
+This criterian is passes as a turing machine in GOL, the STACK can write to with POP AND PUSH as a abstraction of a infinte tape,
+ and the Signal detector can read state, and the FSM can be used to store actions to be done.
+Thus meaning that by those criterian in spite of the fact that this is a abstraction/simulation ran on a computer, it is turing complete. 
+
+
+
+
+
+
+
+
+
+
