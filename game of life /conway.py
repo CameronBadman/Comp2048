@@ -19,8 +19,8 @@ class GameOfLife:
     Object for computing Conway's Game of Life (GoL) cellular machine/automata
     '''
     def __init__(self, N=256, finite=False, fastMode=False):
-        self.grid = np.zeros((N,N), np.int8)
-        self.neighborhood = np.ones((3,3), np.int8) # 8 connected kernel
+        self.grid = np.zeros((N,N), np.byte)
+        self.neighborhood = np.ones((3,3), np.byte) # 8 connected kernel
         self.neighborhood[1,1] = 0 #do not count centre pixel
         self.finite = finite
         self.fastMode = fastMode
@@ -45,28 +45,37 @@ class GameOfLife:
     
     def slow_evolve(self, mode='same', boundary="wrap"):
         """
-        A placeholder function that mimics the behavior of convolve2d without actually performing the convolution.
-        
-        Parameters:
+        A slow implementation of the Game of Life evolution algorithm.
+
+        This function calculates the number of live neighbors for each cell in the grid
+        based on the current state of the grid and the neighborhood kernel.
+
+        Args:
             mode (str, optional): Determines the output shape. {'full', 'valid', 'same'}
+                Default is 'same'.
             boundary (str, optional): Determines how to handle boundaries. {'wrap', 'fill'}
-            
+                Default is 'wrap'.
+
         Returns:
-            numpy.ndarray: The result of the "convolution".
+            numpy.ndarray: A 2D array of the same shape as the grid, where each element
+                represents the number of live neighbors for the corresponding cell.
         """
-        
         # Mimic behavior based on boundary
         if boundary == 'wrap':
+            # Pad the grid with wrapped edges
             padded_grid = np.pad(self.grid, 1, mode='wrap')
-        else:  # 'fill'
+        else:
+            # 'fill'
+            # Pad the grid with dead cells
             padded_grid = np.pad(self.grid, 1, mode='constant', constant_values=self.deadValue)
-        
+
         # Calculate the weighted sum of neighbors based on the neighborhood kernel
         neighbor_count = np.zeros_like(self.grid)
         for row in range(1, self.size + 1):
             for col in range(1, self.size + 1):
+                # Calculate the sum of neighbors for the current cell
                 neighbor_count[row-1, col-1] = np.sum(padded_grid[row-1:row+2, col-1:col+2] * self.neighborhood)
-    
+
         return neighbor_count
     
     def fast_evolve(self):
@@ -228,12 +237,6 @@ class GameOfLife:
             for j, char in enumerate(row_str):
                 if char == '0':
                     self.grid[row + i, col + j] = self.aliveValue
-        """
-        print("-"*100 + " grid")
-        for row in self.grid:
-            print(' '.join(map(str, row)))
-
-            """
 
 
 
@@ -241,5 +244,18 @@ class GameOfLife:
         '''
         Given string loaded from RLE file, populate the game grid
         '''
-        return rle.RunLengthEncodedParser(rleString)
-        
+        parser = rle.RunLengthEncodedParser(rleString)
+
+        # Iterate over each cell in the pattern
+        for y, row in enumerate(parser.pattern_2d_array):
+            for x, cell in enumerate(row):
+                # Check if the cell is alive
+                if cell != 'b':
+                    # Calculate the target position in the grid
+                    target_y = pad + y
+                    target_x = pad + x
+
+                    # Check if the target position is within the bounds of the grid
+                    if 0 <= target_y < self.size and 0 <= target_x < self.size:
+                        # Set the corresponding cell in the grid to the alive value
+                        self.grid[target_y, target_x] = self.aliveValue
