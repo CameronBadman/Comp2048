@@ -79,26 +79,41 @@ class GameOfLife:
         return neighbor_count
     
     def fast_evolve(self):
-        # EXPLANATION 
-        # convolve is a function that takes multiple argument, but the main 2 are a 2 np.arrays
-        # the first np.array is the base array (self.grid)
-        # the second array is the kernal np.array, this is the values that the valeus found in self.grid are multiplied times 
-        # for example 
-        #
-        # [0, 1, 0]
-        # [0, 1, 0] convolve [1, 1]
-        # [0, 1, 0]          [1, 1]
+        """
+        Perform a fast evolution of the grid using convolution.
 
-        # for example operation 5 in this sequence would be would be sum([[1, 0],[0, 1]] * [[1, 1],[1,1]]) = 2 so on
-        # the next arguement is boundary which I set to  wrap if infinite and fill if finite, this means that when convolve prospectivly goes over the np.array,
-        # it will assume they are the fillvaue (fill), or go to the oppposite of the np.array to get the value (wrap)
-        # thus a glider that goes off the bottom right of the screen will show up at the top left
+        This method uses convolution to evolve the grid to the next generation.
+        Convolution is a mathematical operation that applies a filter (kernel)
+        to an input array (base array) to produce an output array.
 
-        # mode = 'same' means that the array put in will get the same sized output, making it easyer to go over with np.where
+        Args:
+            self.grid (np.array): The base array representing the current generation.
+            self.neighborhood (np.array): The kernel array representing the neighborhood pattern.
+            self.finite (bool): A flag indicating whether the grid has finite boundaries.
 
-        # finnaly the fill value fill the intial np,array with values, for which the numbers are then placed in, these also are the default values for when the kernal is over the edge 
-        # of the grid
+        Returns:
+            np.array: The evolved grid representing the next generation.
+
+        Explanation:
+            - Convolve is a function that takes multiple arguments, primarily two np.arrays.
+            The first np.array is the base array (self.grid), and the second array is the kernel np.array.
+            This kernel represents the values that the values found in self.grid are multiplied by.
+            For example:
+                [0, 1, 0]
+                [0, 1, 0] convolve [1, 1]
+                [0, 1, 0]          [1, 1]
+            For example, operation 5 in this sequence would be sum([[1, 0],[0, 1]] * [[1, 1],[1,1]]) = 2 and so on.
+            - The 'boundary' argument is set to 'wrap' if infinite and 'fill' if finite.
+            This means that when convolve prospectively goes over the np.array, it will assume they are the fill value (fill),
+            or go to the opposite of the np.array to get the value (wrap).
+            Thus, a glider that goes off the bottom right of the screen will show up at the top left.
+            - 'Mode' set to 'same' means that the array put in will get the same sized output,
+            making it easier to go over with np.where.
+            - Finally, the fill value fills the initial np.array with values, for which the numbers are then placed in.
+            These also are the default values for when the kernel is over the edge of the grid.
+        """
         return signal.convolve2d(self.grid, self.neighborhood, mode='same', boundary='wrap' if not self.finite else 'fill', fillvalue=self.deadValue)
+
         
   
     def evolve(self):
@@ -119,7 +134,7 @@ class GameOfLife:
         
         #get weighted sum of neighbors
               
-        neighbor_count = self.fast_evolve() if self.fastMode else self.slow_evolve()
+        neighbor_count = self.fast_evolve() if self.fastMode else self.slow_evolve(boundary='wrap' if not self.finite else 'fill')
         
         # gets the amount of neighbors using convovle
     
@@ -223,20 +238,24 @@ class GameOfLife:
 
     def insertFromPlainText(self, file_name, row=0, col=0):
         """
-        Inserts a pattern from a text file into the grid.
-        
+        Inserts a pattern from a .cells file into the grid.
+
         Args:
             file_name (str): The name of the file containing the pattern.
             row (int): The starting row index for the pattern.
             col (int): The starting column index for the pattern.
         """
         with open(file_name, 'r') as f:
-            rows = [line.strip() for line in f.readlines()]
-        
-        for i, row_str in enumerate(rows):
+            lines = f.readlines()
+
+        # Skip metadata lines (lines starting with '!')
+        pattern_lines = [line.strip() for line in lines if not line.startswith('!')]
+
+        for i, row_str in enumerate(pattern_lines):
             for j, char in enumerate(row_str):
-                if char == '0':
+                if char == 'O':
                     self.grid[row + i, col + j] = self.aliveValue
+                # You may want to add an else condition here to handle other characters
 
 
 

@@ -18,17 +18,24 @@ implemented pause funciton to help find it
 
 D 
 
-I constructed 
+I constructed 3 different formations using the advised format, these are important to question H
 
-ants """https://conwaylife.com/wiki/Ants"""
-multiple ants going in a line when alive the cells die and become a 2x2 alive swaure 
+CC_semi_cenark 24 × 26
+https://conwaylife.com/wiki/CC_semi-cenark
 
-puffer blinker - """https://conwaylife.com/wiki/Blinker_puffer_1"""
-this is a gosper puffer, it gliders forward and is able drop blinkers as it moves 
+this is a type of reverser, this is important to the creation of tape and binary in a computer 
 
-jaydot -   """https://conwaylife.com/wiki/Jaydot"""
-this is a formation of cells called a methuselah that have a extrmeily long evolve period (6920) in which it lasts before stabilzing extending to singificantly large
-then the original size of the formation 
+Bistable_switch 30 × 48
+https://conwaylife.com/wiki/Bistable_switch
+
+this is a complex version of memory, there is simpler versions but they are smaller then 20 x 20
+
+max 27 × 27
+https://conwaylife.com/wiki/Max
+
+this is one of the creations used to large displays of computers in GOL
+
+
 
 E
 method still uses the kernal, hoever it uses a inert function from scipy signal that allows for grid to be 3000 and above to 
@@ -45,13 +52,19 @@ could have no cells like a 1/4 quarter unfilled
 
 F
 
-P46_gliderless_MWSS_gun
+P46_gliderless_MWSS_gun 40 × 29
+https://conwaylife.com/wiki/P46_gliderless_MWSS_gun
 
+this kind of glider is used in the GOL turing machine
 
-Period-52_glider_gun
+inverter 25 - 21 
+https://conwaylife.com/wiki/Gosper_glider_gun
 
+to have a turning machine you need a not gate, this show how a interting happens in a GOL turing machine
 
-Ring_of_fire
+twoguns 40 x 26
+https://conwaylife.com/wiki/Gosper_glider_gun
+this shows how when 2 - 3 gliders hit eacher in certain ways they anihilate each other, it also show cases a glider eater
 
 G 
 
@@ -67,8 +80,15 @@ of the Turing machine pattern provided using this link.
 
 
  - theory of Turing machines
-for the sake of time I'm not going to go into extreme detail about the specifics of how the GOL turing machine works, just explain 
-primary functions and some of the child functions in the larger componants when needed
+
+ - BASIC PRINCIPLES and componants of the turing machine (and large representations)
+
+ - the theroy of turing com
+
+
+
+
+
 
  - Turing machine parts 
 
